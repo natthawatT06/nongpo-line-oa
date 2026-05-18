@@ -159,6 +159,39 @@ export async function getLatestFarmerFieldFromSupabase(lineUserId) {
   }
 }
 
+export async function getLatestAnyFarmerFieldFromSupabase() {
+  if (!supabaseAdmin) {
+    return null
+  }
+
+  const { data, error } = await supabaseAdmin
+    .from('farmer_fields')
+    .select('id, field_name, crop, area_rai, latitude, longitude, province, district, note, created_at')
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  if (error) {
+    throw error
+  }
+
+  if (!data) return null
+
+  return {
+    id: data.id,
+    name: data.field_name,
+    crop: data.crop,
+    area_rai: data.area_rai,
+    latitude: data.latitude,
+    longitude: data.longitude,
+    province: data.province,
+    district: data.district,
+    note: data.note,
+    created_at: data.created_at,
+    source: 'supabase-global-fallback',
+  }
+}
+
 export async function addPlantingPlanToSupabase({
   lineUserId,
   fieldId,

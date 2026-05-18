@@ -16,6 +16,7 @@ import {
 import {
   addFarmerFieldToSupabase,
   addPlantingPlanToSupabase,
+  getLatestAnyFarmerFieldFromSupabase,
   getLatestFarmerFieldFromSupabase,
   listFarmerFieldsFromSupabase,
   upsertFarmerRegistrationToSupabase,
@@ -833,6 +834,9 @@ async function getLatestFieldForUser(lineUserId) {
   try {
     const supabaseField = await getLatestFarmerFieldFromSupabase(lineUserId)
     if (supabaseField) return supabaseField
+
+    const fallbackField = await getLatestAnyFarmerFieldFromSupabase()
+    if (fallbackField) return fallbackField
   } catch (error) {
     console.error('Supabase latest field lookup failed:', error)
   }
