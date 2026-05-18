@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import {
   BadgeCheck,
   CalendarClock,
+  Activity,
+  Camera,
   ChevronRight,
   Droplets,
   Leaf,
@@ -12,6 +14,8 @@ import {
   Navigation,
   PackageCheck,
   Save,
+  ScanLine,
+  ShieldAlert,
   Sprout,
   Wheat,
 } from 'lucide-react'
@@ -29,6 +33,14 @@ function App() {
 
   if (view === 'plant') {
     return <StartPlantingPage />
+  }
+
+  if (view === 'health') {
+    return <FieldHealthPage />
+  }
+
+  if (view === 'disease') {
+    return <DiseaseAnalysisPage />
   }
 
   if (view === 'register') {
@@ -57,6 +69,10 @@ function getCurrentView() {
 
   if (window.location.pathname === '/field') {
     return 'field'
+  }
+
+  if (window.location.pathname === '/disease') {
+    return 'disease'
   }
 
   if (window.location.pathname === '/login') {
@@ -585,6 +601,215 @@ function StartPlantingPage() {
         {status === 'error' && <p className="save-note error">บันทึกรอบปลูกไม่สำเร็จ ลองตรวจข้อมูลแล้วส่งใหม่อีกครั้งครับ</p>}
       </form>
     </main>
+  )
+}
+
+function FieldHealthPage() {
+  const { fields, status } = useFarmerFields()
+  const field = fields[0]
+  const ndvi = field ? Math.min(0.86, Math.max(0.42, 0.56 + Number(field.areaRai || 1) * 0.012)) : 0
+  const riskPercent = field ? Math.max(8, Math.min(34, Math.round((1 - ndvi) * 58))) : 0
+
+  return (
+    <main className="liff-page insight-page">
+      <section className="insight-hero health-hero">
+        <div>
+          <span className="eyebrow">Field health</span>
+          <h1>ตรวจสุขภาพแปลง</h1>
+          <p>ภาพรวมความเขียว ความชื้น และจุดที่ควรเดินสำรวจในรอบนี้</p>
+        </div>
+        <div className="insight-orb">
+          <Activity size={34} />
+        </div>
+      </section>
+
+      <FieldStatusBlock status={status} field={field} emptyText="ยังไม่พบแปลง กรุณาเพิ่มพื้นที่ก่อนตรวจสุขภาพแปลง" />
+
+      {field && (
+        <>
+          <section className="field-scan-panel">
+            <div className="scan-map" aria-label="แผนที่สุขภาพแปลง">
+              <span className="scan-chip">NDVI {ndvi.toFixed(2)}</span>
+              <span className="risk-zone zone-a" />
+              <span className="risk-zone zone-b" />
+              <span className="scan-gridline" />
+            </div>
+            <div className="scan-metrics">
+              <MetricTile label="สุขภาพรวม" value={riskPercent > 24 ? 'เฝ้าระวัง' : 'ปกติ'} tone={riskPercent > 24 ? 'warn' : 'good'} />
+              <MetricTile label="พื้นที่เสี่ยง" value={`${riskPercent}%`} />
+              <MetricTile label="ความชื้น" value="พอดี" tone="good" />
+            </div>
+          </section>
+
+          <section className="advice-panel">
+            <h2>คำแนะนำรอบนี้</h2>
+            <AdviceItem icon={<ScanLine size={20} />} title="เดินดูด้านตะวันออกของแปลง" text="จุดสีอ่อนในแผนที่ควรถ่ายรูปใบและลำต้นเก็บไว้เทียบซ้ำ" />
+            <AdviceItem icon={<Droplets size={20} />} title="เช็กน้ำขังหลังฝน" text="ถ้ามีน้ำขังเกิน 24 ชั่วโมง ให้เปิดทางระบายน้ำก่อนใส่ปุ๋ยรอบถัดไป" />
+            <AdviceItem icon={<Leaf size={20} />} title="ดูสีใบยอด" text="ถ้าใบยอดเหลืองเป็นหย่อม ให้ส่งรูปผ่านเมนูวิเคราะห์โรค" />
+          </section>
+        </>
+      )}
+    </main>
+  )
+}
+
+function DiseaseAnalysisPage() {
+  const { fields, status } = useFarmerFields()
+  const field = fields[0]
+  const [symptom, setSymptom] = useState('ใบเหลือง')
+  const [note, setNote] = useState('')
+  const [result, setResult] = useState(null)
+
+  function analyzeDisease(event) {
+    event.preventDefault()
+    const risk = symptom === 'ใบขาว' ? 'สูง' : symptom === 'ใบจุด' ? 'ปานกลาง' : 'เฝ้าระวัง'
+    const action = symptom === 'ใบขาว'
+      ? 'แยกกอที่มีอาการชัด ถ่ายรูปยอดและโคนต้น แล้วหลีกเลี่ยงใช้ท่อนพันธุ์จากกอนี้'
+      : 'ถ่ายรูปใบด้านหน้า-หลัง 3 จุด และติดตามอาการซ้ำใน 3-5 วัน'
+    setResult({ risk, action })
+  }
+
+  return (
+    <main className="liff-page insight-page disease-page">
+      <section className="insight-hero disease-hero">
+        <div>
+          <span className="eyebrow">Disease scan</span>
+          <h1>วิเคราะห์โรค</h1>
+          <p>บันทึกอาการที่เห็นในแปลง เพื่อให้น้องโปช่วยคัดกรองความเสี่ยงเบื้องต้น</p>
+        </div>
+        <div className="insight-orb alert">
+          <ShieldAlert size={34} />
+        </div>
+      </section>
+
+      <FieldStatusBlock status={status} field={field} emptyText="ยังไม่พบแปลง กรุณาเพิ่มพื้นที่ก่อนวิเคราะห์โรค" />
+
+      {field && (
+        <form className="disease-form" onSubmit={analyzeDisease}>
+          <section className="advice-panel">
+            <h2>อาการที่พบ</h2>
+            <div className="symptom-grid">
+              {['ใบเหลือง', 'ใบขาว', 'ใบจุด', 'ยอดเหี่ยว'].map((item) => (
+                <button
+                  className={symptom === item ? 'is-selected' : ''}
+                  key={item}
+                  onClick={() => setSymptom(item)}
+                  type="button"
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+            <label className="note-field">
+              รายละเอียดเพิ่มเติม
+              <textarea
+                onChange={(event) => setNote(event.target.value)}
+                placeholder="เช่น พบกี่จุด อายุอ้อยกี่เดือน ฝนตกหนักไหม"
+                rows="4"
+                value={note}
+              />
+            </label>
+            <button className="save-field-button compact" type="submit">
+              <Camera size={22} />
+              วิเคราะห์เบื้องต้น
+            </button>
+          </section>
+
+          <section className="diagnosis-card">
+            {result ? (
+              <>
+                <span className="diagnosis-label">ผลคัดกรอง</span>
+                <h2>ความเสี่ยง{result.risk}</h2>
+                <p>{result.action}</p>
+              </>
+            ) : (
+              <>
+                <span className="diagnosis-label">พร้อมตรวจ</span>
+                <h2>เลือกอาการแล้วกดวิเคราะห์</h2>
+                <p>ผลนี้เป็นการคัดกรองเบื้องต้น ควรถ่ายรูปส่งให้น้องโปหรือเจ้าหน้าที่ดูซ้ำเมื่ออาการรุนแรง</p>
+              </>
+            )}
+          </section>
+        </form>
+      )}
+    </main>
+  )
+}
+
+function useFarmerFields() {
+  const [fields, setFields] = useState([])
+  const [status, setStatus] = useState('loading')
+
+  useEffect(() => {
+    let isMounted = true
+
+    async function loadFields() {
+      try {
+        const lineUserId = await resolveLineUserId()
+        const response = await fetch(`/api/fields/list?lineUserId=${encodeURIComponent(lineUserId)}`)
+        if (!response.ok) throw new Error('Unable to load fields')
+
+        const payload = await response.json()
+        if (!isMounted) return
+
+        const availableFields = payload.fields || []
+        setFields(availableFields)
+        setStatus(availableFields.length ? 'ready' : 'empty')
+      } catch {
+        if (isMounted) setStatus('error')
+      }
+    }
+
+    loadFields()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  return { fields, status }
+}
+
+function FieldStatusBlock({ status, field, emptyText }) {
+  if (status === 'loading') {
+    return <section className="field-status-card">กำลังโหลดข้อมูลแปลง...</section>
+  }
+
+  if (status === 'empty') {
+    return <section className="field-status-card warning">{emptyText}</section>
+  }
+
+  if (status === 'error') {
+    return <section className="field-status-card warning">โหลดข้อมูลไม่สำเร็จ ลองปิดหน้านี้แล้วเปิดใหม่อีกครั้ง</section>
+  }
+
+  return (
+    <section className="field-status-card">
+      <span>แปลงที่กำลังดู</span>
+      <strong>{field.name}</strong>
+      <small>{field.crop}{field.areaRai ? ` / ${field.areaRai} ไร่` : ''}</small>
+    </section>
+  )
+}
+
+function MetricTile({ label, value, tone }) {
+  return (
+    <div className={`metric-tile ${tone || ''}`}>
+      <span>{label}</span>
+      <strong>{value}</strong>
+    </div>
+  )
+}
+
+function AdviceItem({ icon, title, text }) {
+  return (
+    <div className="advice-item">
+      <span>{icon}</span>
+      <div>
+        <strong>{title}</strong>
+        <p>{text}</p>
+      </div>
+    </div>
   )
 }
 

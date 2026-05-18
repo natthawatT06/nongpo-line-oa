@@ -35,8 +35,8 @@ const farmerMenu = {
     ['เพิ่มพื้นที่', 'uri', `${loginLiffUrl}${loginLiffJoiner}view=field`],
     ['คุยกับน้องโป', 'message'],
     ['เริ่มปลูก', 'uri', startLiffUrl],
-    ['ตรวจสุขภาพแปลง', 'message'],
-    ['วิเคราะห์โรค', 'message'],
+    ['ตรวจสุขภาพแปลง', 'uri', `${loginLiffUrl}${loginLiffJoiner}view=health`],
+    ['วิเคราะห์โรค', 'uri', `${loginLiffUrl}${loginLiffJoiner}view=disease`],
     ['หาที่ขาย', 'message'],
   ],
 }

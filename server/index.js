@@ -299,6 +299,7 @@ const farmerMenuReplies = {
   เก็บเกี่ยว: (event) => harvestFlex(event),
   ขายผลผลิต: (event) => sellFlex(event),
   หาที่ขาย: (event) => sellFlex(event),
+  ขอข้อเสนอรับซื้อ: (event) => sellFlex(event),
 }
 
 app.get('/health', (_req, res) => {
@@ -570,6 +571,7 @@ async function healthFlex(event) {
       ['ระดับเสี่ยง', health?.risk_level || 'ปกติ'],
     ],
     button: 'ดูจุดเสี่ยงบนแผนที่',
+    uri: `${loginLiffUrl}${loginLiffUrl.includes('?') ? '&' : '?'}view=health`,
   })
 }
 
@@ -587,6 +589,7 @@ async function diseaseFlex(event) {
       ['คำแนะนำ', 'ตรวจซ้ำ/ดูแลเฉพาะจุด'],
     ],
     button: 'เปิดหน้าส่งรูปวิเคราะห์',
+    uri: `${loginLiffUrl}${loginLiffUrl.includes('?') ? '&' : '?'}view=disease`,
   })
 }
 
@@ -642,11 +645,12 @@ async function sellFlex(event) {
       ['ระยะทาง', `${offer?.distance_km || 18} กม.`],
       ['คาดรับซื้อ', `${offer?.quota_ton || yieldTon.toFixed(1)} ตัน`],
     ],
-    button: 'เปรียบเทียบข้อเสนอ',
+    button: 'ขอข้อเสนอรับซื้อ',
+    messageText: 'ขอข้อเสนอรับซื้อ',
   })
 }
 
-function infoFlex({ title, subtitle, body, rows, button, uri = publicLiffUrl }) {
+function infoFlex({ title, subtitle, body, rows, button, uri = publicLiffUrl, messageText }) {
   return {
     type: 'flex',
     altText: title,
@@ -692,11 +696,17 @@ function infoFlex({ title, subtitle, body, rows, button, uri = publicLiffUrl }) 
             type: 'button',
             style: 'primary',
             color: '#1F7A35',
-            action: {
-              type: 'uri',
-              label: button,
-              uri,
-            },
+            action: messageText
+              ? {
+                  type: 'message',
+                  label: button,
+                  text: messageText,
+                }
+              : {
+                  type: 'uri',
+                  label: button,
+                  uri,
+                },
           },
         ],
       },

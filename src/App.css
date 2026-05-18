@@ -631,6 +631,308 @@
   color: #a4312b;
 }
 
+.insight-page {
+  background:
+    linear-gradient(180deg, rgba(239, 248, 232, 0.96), rgba(255, 250, 225, 0.98)),
+    radial-gradient(circle at 12% 8%, rgba(238, 190, 83, 0.28), transparent 12rem),
+    radial-gradient(circle at 92% 26%, rgba(81, 155, 82, 0.24), transparent 14rem);
+  padding-bottom: 30px;
+}
+
+.insight-hero {
+  align-items: center;
+  background:
+    linear-gradient(135deg, rgba(21, 91, 47, 0.96), rgba(69, 139, 54, 0.88)),
+    url('/line/register-farmer-hero-v2.jpg') center / cover;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  margin: 0 -14px 16px;
+  min-height: 210px;
+  overflow: hidden;
+  padding: 38px 22px 24px;
+  position: relative;
+}
+
+.insight-hero::after {
+  background:
+    linear-gradient(90deg, rgba(255, 229, 151, 0.34), transparent),
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.13) 0 2px, transparent 2px 16px);
+  bottom: 0;
+  content: '';
+  height: 62px;
+  left: 0;
+  position: absolute;
+  right: 0;
+}
+
+.disease-hero {
+  background:
+    linear-gradient(135deg, rgba(83, 51, 39, 0.96), rgba(168, 72, 45, 0.82)),
+    url('/line/register-farmer-hero-v2.jpg') center / cover;
+}
+
+.insight-hero > div {
+  position: relative;
+  z-index: 1;
+}
+
+.insight-hero .eyebrow {
+  color: #f4df94;
+}
+
+.insight-hero h1 {
+  color: #fff;
+  font-size: 36px;
+  line-height: 1.05;
+  margin: 8px 0;
+}
+
+.insight-hero p {
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0;
+  max-width: 285px;
+}
+
+.insight-orb {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.42);
+  border-radius: 24px;
+  color: #fff4bd;
+  display: flex;
+  height: 82px;
+  justify-content: center;
+  width: 82px;
+}
+
+.insight-orb.alert {
+  color: #ffd1b8;
+}
+
+.field-status-card,
+.field-scan-panel,
+.advice-panel,
+.diagnosis-card {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(221, 231, 203, 0.94);
+  border-radius: 18px;
+  box-shadow: 0 12px 28px rgba(45, 86, 48, 0.12);
+  margin-bottom: 14px;
+  padding: 16px;
+}
+
+.field-status-card {
+  display: grid;
+  gap: 4px;
+}
+
+.field-status-card span,
+.field-status-card small {
+  color: #6a795f;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.field-status-card strong {
+  color: #17642c;
+  font-size: 24px;
+  line-height: 1.1;
+}
+
+.field-status-card.warning {
+  color: #8f4b24;
+  font-weight: 900;
+}
+
+.field-scan-panel {
+  display: grid;
+  gap: 12px;
+}
+
+.scan-map {
+  background:
+    linear-gradient(135deg, rgba(55, 113, 49, 0.82), rgba(174, 184, 87, 0.58)),
+    repeating-linear-gradient(42deg, rgba(255, 255, 255, 0.18) 0 3px, transparent 3px 28px);
+  border-radius: 15px;
+  height: 230px;
+  overflow: hidden;
+  position: relative;
+}
+
+.scan-chip {
+  background: rgba(21, 54, 31, 0.78);
+  border-radius: 999px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 900;
+  left: 14px;
+  padding: 8px 12px;
+  position: absolute;
+  top: 14px;
+}
+
+.risk-zone {
+  border: 2px solid rgba(255, 255, 255, 0.84);
+  border-radius: 50%;
+  display: block;
+  position: absolute;
+}
+
+.zone-a {
+  background: rgba(245, 199, 70, 0.48);
+  height: 78px;
+  right: 52px;
+  top: 58px;
+  width: 102px;
+}
+
+.zone-b {
+  background: rgba(238, 113, 70, 0.34);
+  bottom: 34px;
+  height: 54px;
+  left: 72px;
+  width: 76px;
+}
+
+.scan-gridline {
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.22) 0 1px, transparent 1px 36px),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.18) 0 1px, transparent 1px 34px);
+  inset: 0;
+  position: absolute;
+}
+
+.scan-metrics {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.metric-tile {
+  background: #f7f5df;
+  border: 1px solid #e6d9a8;
+  border-radius: 13px;
+  display: grid;
+  gap: 4px;
+  min-height: 76px;
+  padding: 12px;
+}
+
+.metric-tile span {
+  color: #6d735c;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.metric-tile strong {
+  color: #194d27;
+  font-size: 18px;
+  line-height: 1.15;
+}
+
+.metric-tile.good {
+  background: #e9f7df;
+  border-color: #b8d99e;
+}
+
+.metric-tile.warn {
+  background: #fff1d7;
+  border-color: #efc980;
+}
+
+.advice-panel h2,
+.diagnosis-card h2 {
+  color: #246d32;
+  font-size: 24px;
+  line-height: 1.15;
+  margin: 0 0 12px;
+}
+
+.advice-item {
+  align-items: start;
+  border-top: 1px solid #edf0e3;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 30px 1fr;
+  padding: 12px 0;
+}
+
+.advice-item:first-of-type {
+  border-top: 0;
+}
+
+.advice-item > span {
+  align-items: center;
+  background: #eaf6df;
+  border-radius: 10px;
+  color: #216f32;
+  display: flex;
+  height: 30px;
+  justify-content: center;
+}
+
+.advice-item strong {
+  color: #1f3d26;
+  display: block;
+  font-size: 15px;
+  margin-bottom: 3px;
+}
+
+.advice-item p,
+.diagnosis-card p {
+  color: #62705d;
+  font-size: 14px;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.disease-form {
+  display: grid;
+  gap: 14px;
+}
+
+.symptom-grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 1fr 1fr;
+  margin-bottom: 12px;
+}
+
+.symptom-grid button {
+  background: #fff8e5;
+  border: 1.5px solid #e7ca86;
+  border-radius: 14px;
+  color: #5d402c;
+  font: inherit;
+  font-weight: 900;
+  min-height: 48px;
+}
+
+.symptom-grid button.is-selected {
+  background: #9a4f31;
+  border-color: #9a4f31;
+  color: #fff;
+}
+
+.diagnosis-card {
+  background:
+    linear-gradient(135deg, rgba(255, 250, 235, 0.98), rgba(239, 247, 220, 0.96));
+  border-color: #e7d9a8;
+}
+
+.diagnosis-label {
+  color: #9a4f31;
+  display: block;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
 @media (max-width: 380px) {
   .form-row {
     grid-template-columns: 24px 86px 1fr;
@@ -648,5 +950,9 @@
 
   .planting-chips {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .scan-metrics {
+    grid-template-columns: 1fr;
   }
 }
