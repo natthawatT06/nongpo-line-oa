@@ -1,0 +1,652 @@
+.eyebrow {
+  color: #51714a;
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.liff-page {
+  background:
+    linear-gradient(180deg, rgba(234, 247, 231, 0.88), rgba(255, 255, 255, 0.94)),
+    linear-gradient(135deg, #dff0da, #eef7ff);
+  color: #18341f;
+  margin: 0 auto;
+  max-width: 520px;
+  min-height: 100vh;
+  padding: 0 14px 26px;
+}
+
+.farmer-auth-page {
+  background:
+    linear-gradient(180deg, rgba(255, 248, 219, 0.92), rgba(240, 249, 230, 0.96)),
+    radial-gradient(circle at 16% 10%, rgba(255, 221, 123, 0.35), transparent 13rem),
+    linear-gradient(135deg, #dff0da, #dff5ff);
+}
+
+.liff-hero {
+  align-items: center;
+  background:
+    linear-gradient(90deg, rgba(247, 253, 243, 0.94), rgba(235, 248, 229, 0.74)),
+    radial-gradient(circle at 82% 42%, rgba(127, 186, 92, 0.32), transparent 9rem);
+  border-radius: 0 0 28px 28px;
+  display: flex;
+  justify-content: space-between;
+  margin: 0 -14px 18px;
+  min-height: 176px;
+  overflow: hidden;
+  padding: 34px 22px 22px;
+  position: relative;
+}
+
+.farmer-auth-hero {
+  background:
+    linear-gradient(100deg, rgba(255, 248, 219, 0.98), rgba(232, 247, 213, 0.86)),
+    url('/line/register-farmer-hero-v2.jpg') center / cover;
+  border-bottom: 6px solid rgba(255, 255, 255, 0.72);
+  min-height: 218px;
+}
+
+.field-add-hero {
+  min-height: 190px;
+}
+
+.planting-hero {
+  background:
+    linear-gradient(100deg, rgba(255, 247, 214, 0.96), rgba(223, 246, 204, 0.86)),
+    url('/line/register-farmer-hero-v2.jpg') center / cover;
+  min-height: 214px;
+}
+
+.planting-mascot {
+  background: linear-gradient(135deg, #78b940, #1d7132);
+}
+
+.farmer-auth-hero .hero-copy {
+  max-width: 310px;
+  position: relative;
+  z-index: 1;
+}
+
+.liff-hero::after {
+  background:
+    linear-gradient(160deg, rgba(77, 150, 69, 0.32), transparent 35%),
+    repeating-linear-gradient(160deg, rgba(54, 130, 56, 0.16) 0 6px, transparent 6px 18px);
+  bottom: 0;
+  content: '';
+  height: 58px;
+  left: 0;
+  position: absolute;
+  right: 0;
+}
+
+.sprout-mark {
+  display: block;
+  font-size: 28px;
+}
+
+.farmer-auth-hero .sprout-mark {
+  color: #1f6d31;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.liff-hero h1 {
+  color: #297133;
+  font-size: 42px;
+  line-height: 1;
+  margin: 8px 0 6px;
+}
+
+.liff-hero p {
+  color: #61705e;
+  font-size: 14px;
+}
+
+.nongpo-mascot {
+  align-items: center;
+  background: linear-gradient(135deg, #3d913e, #17642c);
+  border: 8px solid #f7e4a8;
+  border-radius: 50%;
+  box-shadow: 0 14px 24px rgba(31, 97, 47, 0.22);
+  color: #fff;
+  display: flex;
+  font-size: 16px;
+  font-weight: 900;
+  height: 104px;
+  justify-content: center;
+  position: relative;
+  width: 104px;
+  z-index: 1;
+}
+
+.auth-choice {
+  background: #f7f1d7;
+  border: 1px solid rgba(255, 255, 255, 0.86);
+  border-radius: 18px;
+  display: grid;
+  gap: 6px;
+  grid-template-columns: 1fr 1fr;
+  margin: 0 0 14px;
+  padding: 6px;
+  box-shadow: 0 12px 28px rgba(59, 105, 42, 0.14);
+}
+
+.auth-choice button {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 13px;
+  color: #426247;
+  cursor: pointer;
+  display: flex;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 900;
+  gap: 8px;
+  justify-content: center;
+  min-height: 48px;
+}
+
+.auth-choice button.is-active {
+  background: #ffffff;
+  color: #155d2b;
+  box-shadow: 0 8px 18px rgba(36, 102, 45, 0.16);
+}
+
+.auth-panel {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 251, 231, 0.95));
+  border-color: rgba(237, 224, 176, 0.95);
+}
+
+.auth-panel .panel-title-row {
+  align-items: start;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.planting-summary {
+  align-items: start;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr auto;
+}
+
+.planting-summary h2 {
+  margin: 4px 0 4px;
+}
+
+.planting-chips {
+  display: grid;
+  gap: 8px;
+  min-width: 116px;
+}
+
+.planting-chips span {
+  background: #eff8df;
+  border: 1px solid #c7dfa7;
+  border-radius: 999px;
+  color: #276233;
+  font-size: 12px;
+  font-weight: 900;
+  padding: 8px 10px;
+  text-align: center;
+}
+
+.login-panel {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px 18px 18px;
+  text-align: center;
+}
+
+.login-mark {
+  align-items: center;
+  background:
+    linear-gradient(135deg, #2f913f, #16652e);
+  border: 7px solid #f8e7a8;
+  border-radius: 24px;
+  box-shadow: 0 14px 28px rgba(30, 102, 46, 0.22);
+  color: #fff;
+  display: flex;
+  height: 78px;
+  justify-content: center;
+  width: 78px;
+}
+
+.login-panel h2 {
+  font-size: 28px;
+  margin: 4px 0 0;
+}
+
+.login-panel p {
+  color: #526654;
+  line-height: 1.65;
+  margin: 0;
+  max-width: 340px;
+}
+
+.line-login-button {
+  align-items: center;
+  background: #06c755;
+  border: 0;
+  border-radius: 16px;
+  box-shadow: 0 14px 26px rgba(6, 199, 85, 0.26);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  font: inherit;
+  font-size: 18px;
+  font-weight: 900;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 8px;
+  min-height: 54px;
+  padding: 14px 18px;
+  width: 100%;
+}
+
+.text-switch-button {
+  background: transparent;
+  border: 0;
+  color: #1f6d31;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 900;
+  padding: 8px;
+  text-align: center;
+  width: 100%;
+}
+
+.gps-button {
+  align-items: center;
+  background: linear-gradient(135deg, #f6e09a, #8ecb52);
+  border: 0;
+  border-radius: 15px;
+  box-shadow: 0 12px 24px rgba(93, 132, 53, 0.22);
+  color: #174e26;
+  cursor: pointer;
+  display: flex;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 900;
+  gap: 10px;
+  justify-content: center;
+  margin: 12px 0;
+  min-height: 52px;
+  padding: 13px 16px;
+  width: 100%;
+}
+
+.stepper {
+  align-items: center;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: auto 1fr auto 1fr auto;
+  margin: 4px 0 16px;
+}
+
+.step-badge {
+  align-items: center;
+  color: #8c928b;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 82px;
+  text-align: center;
+}
+
+.step-badge span {
+  align-items: center;
+  background: #fff;
+  border: 2px solid #d8ded5;
+  border-radius: 50%;
+  display: flex;
+  font-weight: 800;
+  height: 42px;
+  justify-content: center;
+  width: 42px;
+}
+
+.step-badge strong {
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.step-badge.active {
+  color: #2a7936;
+}
+
+.step-badge.active span {
+  background: #2d913e;
+  border-color: #2d913e;
+  color: #fff;
+}
+
+.step-line {
+  background: #cfd9cc;
+  height: 2px;
+}
+
+.field-form {
+  display: grid;
+  gap: 14px;
+}
+
+.form-panel {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(216, 231, 209, 0.95);
+  border-radius: 18px;
+  box-shadow: 0 10px 28px rgba(32, 72, 41, 0.1);
+  padding: 16px;
+}
+
+.form-panel h2 {
+  color: #287337;
+  font-size: 22px;
+  line-height: 1.15;
+  margin: 0 0 12px;
+}
+
+.form-panel p {
+  color: #758071;
+  font-size: 13px;
+}
+
+.form-row {
+  align-items: center;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 28px 104px 1fr 18px;
+  padding: 8px 0;
+}
+
+.farmer-register-form .form-row {
+  grid-template-columns: 28px 116px 1fr 18px;
+}
+
+.row-icon,
+.row-chevron {
+  color: #2d813b;
+}
+
+.row-label {
+  color: #263c2b;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.form-row input,
+.form-row select,
+.soil-panel input,
+.coord-grid input,
+.note-field textarea {
+  background: #fbfff7;
+  border: 1.5px solid #9cc58e;
+  border-radius: 9px;
+  color: #203326;
+  font: inherit;
+  font-size: 14px;
+  min-width: 0;
+  padding: 10px 12px;
+  width: 100%;
+}
+
+.coord-grid.compact {
+  margin-bottom: 0;
+}
+
+.note-field {
+  color: #49614d;
+  display: grid;
+  font-size: 13px;
+  font-weight: 900;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.note-field textarea {
+  min-height: 86px;
+  resize: vertical;
+}
+
+.input-with-unit {
+  align-items: center;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 1fr 30px;
+}
+
+.input-with-unit span {
+  color: #56705a;
+  font-weight: 800;
+}
+
+.location-actions {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr 1fr;
+  margin: 12px 0;
+}
+
+.location-actions button {
+  align-items: center;
+  background: #f4fbe9;
+  border: 1.5px solid #9cc58e;
+  border-radius: 13px;
+  color: #245e31;
+  display: grid;
+  font: inherit;
+  gap: 2px;
+  grid-template-columns: 30px 1fr;
+  min-height: 74px;
+  padding: 12px;
+  text-align: left;
+}
+
+.location-actions button span {
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.location-actions button small {
+  color: #71806c;
+  font-size: 12px;
+  grid-column: 2;
+}
+
+.coord-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr 1fr;
+  margin-bottom: 12px;
+}
+
+.coord-grid label,
+.soil-panel label {
+  color: #49614d;
+  display: grid;
+  font-size: 12px;
+  font-weight: 800;
+  gap: 6px;
+}
+
+.satellite-map {
+  background:
+    linear-gradient(120deg, rgba(44, 106, 51, 0.7), rgba(190, 205, 108, 0.5), rgba(61, 118, 67, 0.72)),
+    repeating-linear-gradient(35deg, rgba(255,255,255,.24) 0 2px, transparent 2px 22px),
+    #7da76b;
+  border-radius: 14px;
+  height: 238px;
+  overflow: hidden;
+  position: relative;
+}
+
+.satellite-map::before {
+  background:
+    repeating-linear-gradient(90deg, rgba(39, 83, 41, 0.3) 0 1px, transparent 1px 42px),
+    repeating-linear-gradient(0deg, rgba(39, 83, 41, 0.24) 0 1px, transparent 1px 38px);
+  content: '';
+  inset: 0;
+  position: absolute;
+}
+
+.map-label {
+  align-items: center;
+  background: rgba(26, 55, 34, 0.74);
+  border-radius: 999px;
+  color: #fff;
+  display: flex;
+  font-size: 13px;
+  font-weight: 800;
+  gap: 6px;
+  left: 14px;
+  padding: 9px 12px;
+  position: absolute;
+  top: 14px;
+  z-index: 2;
+}
+
+.polygon-overlay {
+  inset: 24px 16px 38px;
+  position: absolute;
+  z-index: 1;
+}
+
+.polygon-overlay polygon {
+  fill: rgba(97, 190, 75, 0.48);
+  stroke: #fff;
+  stroke-width: 5;
+}
+
+.polygon-overlay circle {
+  fill: #fff;
+  stroke: #70aa60;
+  stroke-width: 4;
+}
+
+.map-controls {
+  display: grid;
+  gap: 8px;
+  position: absolute;
+  right: 12px;
+  top: 74px;
+  z-index: 2;
+}
+
+.map-controls button {
+  background: #fff;
+  border: 0;
+  border-radius: 8px;
+  box-shadow: 0 5px 12px rgba(0,0,0,.16);
+  color: #16351f;
+  font-size: 24px;
+  font-weight: 900;
+  height: 38px;
+  width: 38px;
+}
+
+.map-summary {
+  align-items: center;
+  background: rgba(250, 255, 244, 0.94);
+  border: 1px solid rgba(168, 202, 154, 0.7);
+  border-radius: 12px;
+  bottom: 10px;
+  color: #426047;
+  display: flex;
+  font-size: 13px;
+  font-weight: 800;
+  justify-content: space-between;
+  left: 10px;
+  padding: 10px;
+  position: absolute;
+  right: 10px;
+  z-index: 2;
+}
+
+.map-summary span {
+  align-items: center;
+  display: flex;
+  gap: 5px;
+}
+
+.map-summary strong {
+  color: #237536;
+  font-size: 16px;
+}
+
+.soil-panel {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.soil-panel h2 {
+  grid-column: 1 / -1;
+}
+
+.save-field-button {
+  align-items: center;
+  background: linear-gradient(135deg, #47a33f, #176f2f);
+  border: 0;
+  border-radius: 18px;
+  box-shadow: 0 14px 28px rgba(32, 111, 47, 0.24);
+  color: #fff;
+  display: flex;
+  font: inherit;
+  font-size: 24px;
+  font-weight: 900;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 2px;
+  padding: 18px 20px;
+  width: 100%;
+}
+
+.save-field-button.compact {
+  font-size: 18px;
+  margin-top: 16px;
+  padding: 14px 18px;
+}
+
+.save-field-button:disabled {
+  opacity: 0.7;
+}
+
+.save-note {
+  color: #287337;
+  font-size: 14px;
+  font-weight: 800;
+  padding: 0 4px;
+  text-align: center;
+}
+
+.save-note.error {
+  color: #a4312b;
+}
+
+@media (max-width: 380px) {
+  .form-row {
+    grid-template-columns: 24px 86px 1fr;
+  }
+
+  .row-chevron {
+    display: none;
+  }
+
+  .location-actions,
+  .planting-summary,
+  .soil-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .planting-chips {
+    grid-template-columns: 1fr 1fr;
+  }
+}

@@ -1,0 +1,37 @@
+services:
+  - type: web
+    name: nongpo-line-oa
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: 22
+      - key: LINE_CHANNEL_ACCESS_TOKEN
+        sync: false
+      - key: LINE_CHANNEL_SECRET
+        sync: false
+      - key: PUBLIC_WEB_URL
+        sync: false
+      - key: PUBLIC_LIFF_URL
+        sync: false
+      - key: PUBLIC_LIFF_URL_LOGIN
+        sync: false
+      - key: PUBLIC_LIFF_URL_START
+        sync: false
+      - key: VITE_LIFF_ID
+        sync: false
+      - key: VITE_LIFF_ID_LOGIN
+        sync: false
+      - key: VITE_LIFF_ID_START
+        sync: false
+      - key: RICH_MENU_ID_FARMER
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SUPABASE_PROJECT_ID
+        sync: false

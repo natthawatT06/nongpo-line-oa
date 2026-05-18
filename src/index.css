@@ -1,0 +1,38 @@
+:root {
+  color: #18251d;
+  font-family:
+    'Noto Sans Thai',
+    'IBM Plex Sans Thai',
+    'Segoe UI',
+    sans-serif;
+  font-synthesis: none;
+  line-height: 1.5;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: #eaf4ea;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+button,
+input,
+select,
+textarea {
+  letter-spacing: 0;
+}
+
+button:focus-visible {
+  outline: 3px solid rgba(28, 118, 51, 0.34);
+  outline-offset: 2px;
+}
