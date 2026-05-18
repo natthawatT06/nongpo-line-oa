@@ -16,6 +16,7 @@ import {
 import {
   addFarmerFieldToSupabase,
   addPlantingPlanToSupabase,
+  getLatestFarmerFieldFromSupabase,
   listFarmerFieldsFromSupabase,
   upsertFarmerRegistrationToSupabase,
 } from './supabase.js'
@@ -142,7 +143,7 @@ app.post('/api/fields/add', express.json(), async (req, res) => {
   }
 
   try {
-    const supabase = await addFarmerFieldToSupabase({
+    const fieldPayload = {
       lineUserId,
       fieldName: fieldName.trim(),
       crop: crop.trim(),
@@ -152,9 +153,11 @@ app.post('/api/fields/add', express.json(), async (req, res) => {
       province: province?.trim() || null,
       district: district?.trim() || null,
       note: note?.trim() || null,
-    })
+    }
+    const supabase = await addFarmerFieldToSupabase(fieldPayload)
+    const local = saveFieldLocallyIfComplete(fieldPayload)
 
-    res.json({ ok: true, supabase })
+    res.json({ ok: true, supabase, local })
   } catch (error) {
     console.error('Supabase field insert failed:', error)
     res.status(502).json({
@@ -429,7 +432,7 @@ async function saveFieldAndReply(event, payload) {
   const field = createField({ lineUserId: userId, ...payload })
   return reply(event.replyToken, [
     simpleText(`บันทึกแปลง "${field.name}" แล้วครับ ต่อไปกด เริ่มปลูก / ตรวจแปลง / ขายผลผลิต ได้เลย`),
-    fieldFlex(event),
+    await fieldFlex(event),
   ])
 }
 
@@ -495,7 +498,7 @@ async function answerSugarcaneQuestion(event, text) {
   try {
     const answer = await askSugarcaneExpert({
       question: text,
-      field: getLatestField(event.source?.userId),
+      field: await getLatestFieldForUser(event.source?.userId),
     })
 
     return reply(event.replyToken, simpleText(answer))
@@ -508,8 +511,8 @@ async function answerSugarcaneQuestion(event, text) {
   }
 }
 
-function fieldFlex(event) {
-  const field = getLatestField(event.source?.userId)
+async function fieldFlex(event) {
+  const field = await getLatestFieldForUser(event.source?.userId)
   if (!field) return registrationGuide()
 
   return infoFlex({
@@ -526,7 +529,7 @@ function fieldFlex(event) {
 }
 
 async function plantFlex(event) {
-  const field = getLatestField(event.source?.userId)
+  const field = await getLatestFieldForUser(event.source?.userId)
   if (!field) return registrationGuide()
 
   const weather = await safeWeather(field)
@@ -548,8 +551,8 @@ async function plantFlex(event) {
   })
 }
 
-function healthFlex(event) {
-  const field = getLatestField(event.source?.userId)
+async function healthFlex(event) {
+  const field = await getLatestFieldForUser(event.source?.userId)
   if (!field) return registrationGuide()
 
   const health = getFieldHealth(field.id)
@@ -569,8 +572,8 @@ function healthFlex(event) {
   })
 }
 
-function diseaseFlex(event) {
-  const field = getLatestField(event.source?.userId)
+async function diseaseFlex(event) {
+  const field = await getLatestFieldForUser(event.source?.userId)
   if (!field) return registrationGuide()
 
   return infoFlex({
@@ -586,8 +589,8 @@ function diseaseFlex(event) {
   })
 }
 
-function inputsFlex(event) {
-  const field = getLatestField(event.source?.userId)
+async function inputsFlex(event) {
+  const field = await getLatestFieldForUser(event.source?.userId)
   if (!field) return registrationGuide()
 
   return infoFlex({
@@ -604,7 +607,7 @@ function inputsFlex(event) {
 }
 
 async function harvestFlex(event) {
-  const field = getLatestField(event.source?.userId)
+  const field = await getLatestFieldForUser(event.source?.userId)
   if (!field) return registrationGuide()
 
   const weather = await safeWeather(field)
@@ -622,8 +625,8 @@ async function harvestFlex(event) {
   })
 }
 
-function sellFlex(event) {
-  const field = getLatestField(event.source?.userId)
+async function sellFlex(event) {
+  const field = await getLatestFieldForUser(event.source?.userId)
   if (!field) return registrationGuide()
 
   const offer = getBestOffer(field.id)
@@ -807,6 +810,10 @@ function registrationRow(label, value) {
 }
 
 async function safeWeather(field) {
+  if (!Number.isFinite(Number(field?.latitude)) || !Number.isFinite(Number(field?.longitude))) {
+    return null
+  }
+
   try {
     return await getWeatherSummary(field.latitude, field.longitude)
   } catch (error) {
@@ -817,7 +824,52 @@ async function safeWeather(field) {
 
 function estimateYield(field) {
   const cropFactor = field.crop.includes('ข้าว') ? 0.55 : 0.45
-  return field.area_rai * cropFactor
+  return Number(field.area_rai || 0) * cropFactor
+}
+
+async function getLatestFieldForUser(lineUserId) {
+  if (!lineUserId) return null
+
+  try {
+    const supabaseField = await getLatestFarmerFieldFromSupabase(lineUserId)
+    if (supabaseField) return supabaseField
+  } catch (error) {
+    console.error('Supabase latest field lookup failed:', error)
+  }
+
+  return getLatestField(lineUserId)
+}
+
+function saveFieldLocallyIfComplete({
+  lineUserId,
+  fieldName,
+  crop,
+  areaRai,
+  latitude,
+  longitude,
+}) {
+  if (
+    !Number.isFinite(Number(areaRai)) ||
+    !Number.isFinite(Number(latitude)) ||
+    !Number.isFinite(Number(longitude))
+  ) {
+    return { skipped: true, reason: 'Missing local SQLite coordinates or area' }
+  }
+
+  try {
+    upsertUserRole(lineUserId, 'farmer')
+    return createField({
+      lineUserId,
+      name: fieldName,
+      crop,
+      areaRai: Number(areaRai),
+      latitude: Number(latitude),
+      longitude: Number(longitude),
+    })
+  } catch (error) {
+    console.error('Local field save failed:', error)
+    return { skipped: true, reason: 'Local SQLite insert failed' }
+  }
 }
 
 function simpleText(text) {
