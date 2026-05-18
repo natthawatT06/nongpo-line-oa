@@ -2,8 +2,19 @@ import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = process.env.SUPABASE_URL
 const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+const isUsableEnvValue = (value) => value && !['none', 'null', 'undefined'].includes(value.toLowerCase())
+const isValidHttpUrl = (value) => {
+  if (!isUsableEnvValue(value)) return false
 
-export const supabaseAdmin = supabaseUrl && supabaseServiceRoleKey
+  try {
+    const url = new URL(value)
+    return url.protocol === 'http:' || url.protocol === 'https:'
+  } catch {
+    return false
+  }
+}
+
+export const supabaseAdmin = isValidHttpUrl(supabaseUrl) && isUsableEnvValue(supabaseServiceRoleKey)
   ? createClient(supabaseUrl, supabaseServiceRoleKey, {
       auth: {
         persistSession: false,
