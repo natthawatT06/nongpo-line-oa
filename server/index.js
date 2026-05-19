@@ -21,6 +21,11 @@ import {
   listFarmerFieldsFromSupabase,
   upsertFarmerRegistrationToSupabase,
 } from './supabase.js'
+import {
+  appendFarmerFieldToGoogleSheets,
+  appendFarmerRegistrationToGoogleSheets,
+  appendPlantingPlanToGoogleSheets,
+} from './googleSheets.js'
 import { askSugarcaneExpert } from './typhoon.js'
 import { getWeatherSummary } from './weather.js'
 
@@ -81,19 +86,23 @@ app.post('/api/farmers/register', express.json(), async (req, res) => {
 
   const user = upsertFarmerRegistration(payload)
   let supabase
+  let sheets
 
   try {
     supabase = await upsertFarmerRegistrationToSupabase(payload)
   } catch (error) {
     console.error('Supabase farmer registration failed:', error)
-    res.status(502).json({
-      ok: false,
-      message: 'Failed to save farmer registration to Supabase',
-    })
-    return
+    supabase = { skipped: true, reason: 'Supabase insert failed; saved locally' }
   }
 
-  res.json({ ok: true, user, supabase })
+  try {
+    sheets = await appendFarmerRegistrationToGoogleSheets(payload)
+  } catch (error) {
+    console.error('Google Sheets farmer registration failed:', error)
+    sheets = { skipped: true, reason: 'Google Sheets append failed' }
+  }
+
+  res.json({ ok: true, user, supabase, sheets })
 })
 
 app.post('/api/farmers/register-local', express.json(), (req, res) => {
@@ -165,29 +174,37 @@ app.post('/api/fields/add', express.json(), async (req, res) => {
     return
   }
 
-  try {
-    const fieldPayload = {
-      lineUserId,
-      fieldName: fieldName.trim(),
-      crop: crop.trim(),
-      areaRai: areaRai === '' || areaRai == null ? null : Number(areaRai),
-      latitude: latitude === '' || latitude == null ? null : Number(latitude),
-      longitude: longitude === '' || longitude == null ? null : Number(longitude),
-      province: province?.trim() || null,
-      district: district?.trim() || null,
-      note: note?.trim() || null,
-    }
-    const supabase = await addFarmerFieldToSupabase(fieldPayload)
-    const local = saveFieldLocallyIfComplete(fieldPayload)
+  const fieldPayload = {
+    lineUserId,
+    fieldName: fieldName.trim(),
+    crop: crop.trim(),
+    areaRai: areaRai === '' || areaRai == null ? null : Number(areaRai),
+    latitude: latitude === '' || latitude == null ? null : Number(latitude),
+    longitude: longitude === '' || longitude == null ? null : Number(longitude),
+    province: province?.trim() || null,
+    district: district?.trim() || null,
+    note: note?.trim() || null,
+  }
+  let supabase
+  let sheets
 
-    res.json({ ok: true, supabase, local })
+  try {
+    supabase = await addFarmerFieldToSupabase(fieldPayload)
   } catch (error) {
     console.error('Supabase field insert failed:', error)
-    res.status(502).json({
-      ok: false,
-      message: 'Failed to save field to Supabase',
-    })
+    supabase = { skipped: true, reason: 'Supabase insert failed; saved locally' }
   }
+
+  try {
+    sheets = await appendFarmerFieldToGoogleSheets(fieldPayload)
+  } catch (error) {
+    console.error('Google Sheets field append failed:', error)
+    sheets = { skipped: true, reason: 'Google Sheets append failed' }
+  }
+
+  const local = saveFieldLocallyIfComplete(fieldPayload)
+
+  res.json({ ok: true, supabase, sheets, local })
 })
 
 app.get('/api/fields/list', async (req, res) => {
@@ -263,6 +280,7 @@ app.post('/api/planting/start', express.json(), async (req, res) => {
 
   const plan = createPlantingPlan(payload)
   let supabase
+  let sheets
 
   try {
     supabase = await addPlantingPlanToSupabase(payload)
@@ -271,7 +289,14 @@ app.post('/api/planting/start', express.json(), async (req, res) => {
     supabase = { skipped: true, reason: 'Supabase insert failed; saved locally' }
   }
 
-  res.json({ ok: true, plan, supabase })
+  try {
+    sheets = await appendPlantingPlanToGoogleSheets(payload)
+  } catch (error) {
+    console.error('Google Sheets planting plan append failed:', error)
+    sheets = { skipped: true, reason: 'Google Sheets append failed' }
+  }
+
+  res.json({ ok: true, plan, supabase, sheets })
 })
 
 app.post('/api/fields/register', express.json(), (req, res) => {
@@ -471,9 +496,28 @@ async function saveFieldAndReply(event, payload) {
     cloudSave = { skipped: true, reason: 'Supabase insert failed; saved locally' }
   }
 
-  const savedText = cloudSave?.skipped
-    ? `บันทึกแปลง "${field.name}" ในระบบ LINE แล้วครับ แต่ยังส่งเข้า Supabase ไม่สำเร็จ`
-    : `บันทึกแปลง "${field.name}" เข้า Supabase แล้วครับ ต่อไปกด เริ่มปลูก / ตรวจแปลง / ขายผลผลิต ได้เลย`
+  let sheetsSave
+
+  try {
+    sheetsSave = await appendFarmerFieldToGoogleSheets({
+      lineUserId: userId,
+      fieldName: payload.name,
+      crop: payload.crop,
+      areaRai: payload.areaRai,
+      latitude: payload.latitude,
+      longitude: payload.longitude,
+      province: null,
+      district: null,
+      note: [payload.soilType, payload.soilPh ? `pH ${payload.soilPh}` : null].filter(Boolean).join(' / ') || null,
+    })
+  } catch (error) {
+    console.error('Google Sheets LINE field append failed:', error)
+    sheetsSave = { skipped: true, reason: 'Google Sheets append failed' }
+  }
+
+  const savedText = sheetsSave?.skipped && cloudSave?.skipped
+    ? `บันทึกแปลง "${field.name}" ในระบบ LINE แล้วครับ แต่ยังส่งออกไปฐานข้อมูลออนไลน์ไม่สำเร็จ`
+    : `บันทึกแปลง "${field.name}" แล้วครับ ต่อไปกด เริ่มปลูก / ตรวจแปลง / ขายผลผลิต ได้เลย`
 
   return reply(event.replyToken, [
     simpleText(savedText),
