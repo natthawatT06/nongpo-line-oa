@@ -144,7 +144,8 @@ function FieldRegistrationPage() {
       }
 
       setLoginStatus('saved')
-    } catch {
+    } catch (error) {
+      console.warn('LINE login failed:', error)
       setLoginStatus('error')
     }
   }
@@ -860,6 +861,9 @@ async function resolveLineUserId() {
       liff.login({ redirectUri: window.location.href })
       throw new Error('Redirecting to LINE login')
     }
+
+    const contextUserId = liff.getContext()?.userId
+    if (contextUserId) return contextUserId
 
     try {
       const profile = await liff.getProfile()
