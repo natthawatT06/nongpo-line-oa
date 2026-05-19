@@ -25,6 +25,7 @@ import {
   appendFarmerFieldToGoogleSheets,
   appendFarmerRegistrationToGoogleSheets,
   appendPlantingPlanToGoogleSheets,
+  debugGoogleSheets,
   getLatestAnyFarmerFieldFromGoogleSheets,
   getLatestFarmerFieldFromGoogleSheets,
   getGoogleSheetsStatus,
@@ -389,6 +390,15 @@ app.get('/api/debug/storage', async (req, res) => {
     googleSheets: getGoogleSheetsStatus(),
     lineUserIdProvided: Boolean(lineUserId),
     checks: {},
+  }
+
+  try {
+    debug.checks.googleSheetsDebug = await debugGoogleSheets()
+  } catch (error) {
+    debug.checks.googleSheetsDebug = {
+      ok: false,
+      message: error.message,
+    }
   }
 
   try {

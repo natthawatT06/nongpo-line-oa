@@ -64,6 +64,11 @@ function doGet(event) {
   try {
     const sheetName = event.parameter.sheet;
     const action = event.parameter.action || 'list';
+
+    if (action === 'debug') {
+      return debugSpreadsheet();
+    }
+
     const headers = SHEETS[sheetName];
 
     if (action !== 'list') {
@@ -104,6 +109,25 @@ function doGet(event) {
   } catch (error) {
     return json({ ok: false, message: error.message }, 500);
   }
+}
+
+function debugSpreadsheet() {
+  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  const sheets = spreadsheet.getSheets().map((sheet) => ({
+    name: sheet.getName(),
+    lastRow: sheet.getLastRow(),
+    lastColumn: sheet.getLastColumn(),
+    headers: sheet.getLastColumn()
+      ? sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0].map(normalizeValue)
+      : [],
+  }));
+
+  return json({
+    ok: true,
+    spreadsheetName: spreadsheet.getName(),
+    spreadsheetId: spreadsheet.getId(),
+    sheets,
+  });
 }
 
 function ensureHeaders(sheet, headers) {

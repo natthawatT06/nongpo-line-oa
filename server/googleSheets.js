@@ -70,6 +70,31 @@ async function readFromGoogleSheet(sheet, params = {}) {
   return payload || { ok: true, rows: [] }
 }
 
+export async function debugGoogleSheets() {
+  if (!hasGoogleSheetsWebhook()) {
+    return { skipped: true, reason: 'Missing GOOGLE_SHEETS_WEBHOOK_URL' }
+  }
+
+  const url = new URL(googleSheetsWebhookUrl)
+  url.searchParams.set('action', 'debug')
+
+  const response = await fetch(url)
+  const text = await response.text()
+  let payload
+
+  try {
+    payload = text ? JSON.parse(text) : null
+  } catch {
+    payload = { raw: text }
+  }
+
+  if (!response.ok || payload?.ok === false) {
+    throw new Error(payload?.message || `Google Sheets debug failed with ${response.status}`)
+  }
+
+  return payload || { ok: true }
+}
+
 function mapFarmerField(row) {
   const areaRai = row.area_rai === '' || row.area_rai == null ? null : Number(row.area_rai)
   const latitude = row.latitude === '' || row.latitude == null ? null : Number(row.latitude)
