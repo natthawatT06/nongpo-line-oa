@@ -850,7 +850,7 @@ async function resolveLineUserId() {
   }
 
   if (!liffId) {
-    throw new Error('Missing LIFF ID')
+    return getFallbackLineUserId()
   }
 
   const liff = (await import('@line/liff')).default
@@ -858,8 +858,7 @@ async function resolveLineUserId() {
     await liff.init({ liffId })
 
     if (!liff.isLoggedIn()) {
-      liff.login({ redirectUri: window.location.href })
-      throw new Error('Redirecting to LINE login')
+      return getFallbackLineUserId()
     }
 
     const contextUserId = liff.getContext()?.userId
@@ -871,12 +870,22 @@ async function resolveLineUserId() {
     } catch {
       const tokenUserId = liff.getDecodedIDToken()?.sub
       if (tokenUserId) return tokenUserId
-      throw new Error('Unable to resolve LINE user id')
+      return getFallbackLineUserId()
     }
   } catch (error) {
     console.warn('LIFF profile error:', error)
-    throw error
+    return getFallbackLineUserId()
   }
+}
+
+function getFallbackLineUserId() {
+  const key = 'nongpoFallbackLineUserId'
+  const existing = window.localStorage.getItem(key)
+  if (existing) return existing
+
+  const created = `sheet-demo-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+  window.localStorage.setItem(key, created)
+  return created
 }
 
 export default App

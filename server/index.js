@@ -161,7 +161,6 @@ app.post('/api/farmers/login', express.json(), async (req, res) => {
 
 app.post('/api/fields/add', express.json(), async (req, res) => {
   const {
-    lineUserId,
     fieldName,
     crop,
     areaRai,
@@ -171,6 +170,7 @@ app.post('/api/fields/add', express.json(), async (req, res) => {
     district,
     note,
   } = req.body || {}
+  const lineUserId = req.body?.lineUserId || 'sheet-demo-user'
 
   if (!lineUserId || !fieldName || !crop) {
     res.status(400).json({
