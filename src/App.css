@@ -43,7 +43,7 @@
 .farmer-auth-hero {
   background:
     linear-gradient(100deg, rgba(255, 248, 219, 0.98), rgba(232, 247, 213, 0.86)),
-    url('/line/register-farmer-hero-v2.jpg') center / cover;
+    url('/line/nongpo-field-hero.jpg') center / cover;
   border-bottom: 6px solid rgba(255, 255, 255, 0.72);
   min-height: 218px;
 }
@@ -55,7 +55,7 @@
 .planting-hero {
   background:
     linear-gradient(100deg, rgba(255, 247, 214, 0.96), rgba(223, 246, 204, 0.86)),
-    url('/line/register-farmer-hero-v2.jpg') center / cover;
+    url('/line/nongpo-field-hero.jpg') center / cover;
   min-height: 214px;
 }
 
@@ -643,7 +643,7 @@
   align-items: center;
   background:
     linear-gradient(135deg, rgba(21, 91, 47, 0.96), rgba(69, 139, 54, 0.88)),
-    url('/line/register-farmer-hero-v2.jpg') center / cover;
+    url('/line/nongpo-field-hero.jpg') center / cover;
   color: #fff;
   display: flex;
   justify-content: space-between;
@@ -669,7 +669,7 @@
 .disease-hero {
   background:
     linear-gradient(135deg, rgba(83, 51, 39, 0.96), rgba(168, 72, 45, 0.82)),
-    url('/line/register-farmer-hero-v2.jpg') center / cover;
+    url('/line/nongpo-field-hero.jpg') center / cover;
 }
 
 .insight-hero > div {
@@ -988,7 +988,7 @@
 .liff-hero {
   background:
     linear-gradient(105deg, rgba(255, 249, 224, 0.98) 0%, rgba(244, 250, 230, 0.92) 48%, rgba(35, 115, 66, 0.18) 100%),
-    url('/line/register-farmer-hero-v2.jpg') center / cover;
+    url('/line/nongpo-field-hero.jpg') center / cover;
   background-position: 0 0, 36% center;
   border-bottom: 1px solid rgba(255, 255, 247, 0.9);
   min-height: 206px;
@@ -1000,7 +1000,7 @@
 .field-add-hero {
   background:
     linear-gradient(105deg, rgba(255, 249, 224, 0.98) 0%, rgba(238, 248, 226, 0.9) 50%, rgba(21, 68, 43, 0.16) 100%),
-    url('/line/register-farmer-hero-v2.jpg') center / cover;
+    url('/line/nongpo-field-hero.jpg') center / cover;
 }
 
 .liff-hero::after,
@@ -1258,13 +1258,13 @@
 .insight-hero {
   background:
     linear-gradient(120deg, rgba(21, 68, 43, 0.95), rgba(35, 115, 66, 0.82) 58%, rgba(58, 139, 163, 0.72)),
-    url('/line/register-farmer-hero-v2.jpg') center / cover;
+    url('/line/nongpo-field-hero.jpg') center / cover;
 }
 
 .disease-hero {
   background:
     linear-gradient(120deg, rgba(76, 48, 35, 0.96), rgba(163, 91, 53, 0.8) 58%, rgba(228, 182, 74, 0.52)),
-    url('/line/register-farmer-hero-v2.jpg') center / cover;
+    url('/line/nongpo-field-hero.jpg') center / cover;
 }
 
 .insight-hero .eyebrow,
@@ -1381,7 +1381,7 @@
   .planting-hero {
     background:
       linear-gradient(105deg, rgba(255, 249, 224, 0.99) 0%, rgba(239, 248, 226, 0.97) 62%, rgba(239, 248, 226, 0.96) 100%),
-      url('/line/register-farmer-hero-v2.jpg') center / cover;
+      url('/line/nongpo-field-hero.jpg') center / cover;
     background-position: 0 0, 36% center;
   }
 
