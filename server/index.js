@@ -25,7 +25,9 @@ import {
   appendFarmerFieldToGoogleSheets,
   appendFarmerRegistrationToGoogleSheets,
   appendPlantingPlanToGoogleSheets,
+  getLatestAnyFarmerFieldFromGoogleSheets,
   getLatestFarmerFieldFromGoogleSheets,
+  listAllFarmerFieldsFromGoogleSheets,
   listFarmerFieldsFromGoogleSheets,
 } from './googleSheets.js'
 import { askSugarcaneExpert } from './typhoon.js'
@@ -234,6 +236,12 @@ app.get('/api/fields/list', async (req, res) => {
     const sheets = await listFarmerFieldsFromGoogleSheets(lineUserId)
     if (sheets.fields?.length) {
       res.json({ ok: true, fields: sheets.fields, source: 'google-sheets' })
+      return
+    }
+
+    const fallbackSheets = await listAllFarmerFieldsFromGoogleSheets()
+    if (fallbackSheets.fields?.length) {
+      res.json({ ok: true, fields: fallbackSheets.fields, source: 'google-sheets-global-fallback' })
       return
     }
   } catch (error) {
@@ -953,6 +961,9 @@ async function getLatestFieldForUser(lineUserId) {
   try {
     const sheetsField = await getLatestFarmerFieldFromGoogleSheets(lineUserId)
     if (sheetsField) return sheetsField
+
+    const fallbackSheetsField = await getLatestAnyFarmerFieldFromGoogleSheets()
+    if (fallbackSheetsField) return fallbackSheetsField
   } catch (error) {
     console.error('Google Sheets latest field lookup failed:', error)
   }

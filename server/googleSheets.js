@@ -161,7 +161,22 @@ export async function listFarmerFieldsFromGoogleSheets(lineUserId) {
   return { fields }
 }
 
+export async function listAllFarmerFieldsFromGoogleSheets() {
+  const payload = await readFromGoogleSheet('farmer_fields')
+  const fields = (payload.rows || [])
+    .map(mapFarmerField)
+    .filter((field) => field.name && field.crop)
+    .sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')))
+
+  return { fields }
+}
+
 export async function getLatestFarmerFieldFromGoogleSheets(lineUserId) {
   const { fields } = await listFarmerFieldsFromGoogleSheets(lineUserId)
+  return fields[0] || null
+}
+
+export async function getLatestAnyFarmerFieldFromGoogleSheets() {
+  const { fields } = await listAllFarmerFieldsFromGoogleSheets()
   return fields[0] || null
 }
