@@ -60,6 +60,52 @@ function doPost(event) {
   }
 }
 
+function doGet(event) {
+  try {
+    const sheetName = event.parameter.sheet;
+    const action = event.parameter.action || 'list';
+    const headers = SHEETS[sheetName];
+
+    if (action !== 'list') {
+      return json({ ok: false, message: `Unknown action: ${action}` }, 400);
+    }
+
+    if (!headers) {
+      return json({ ok: false, message: `Unknown sheet: ${sheetName}` }, 400);
+    }
+
+    const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = spreadsheet.getSheetByName(sheetName);
+
+    if (!sheet) {
+      return json({ ok: true, sheet: sheetName, rows: [] });
+    }
+
+    ensureHeaders(sheet, headers);
+
+    const lastRow = sheet.getLastRow();
+    if (lastRow < 2) {
+      return json({ ok: true, sheet: sheetName, rows: [] });
+    }
+
+    const values = sheet.getRange(2, 1, lastRow - 1, headers.length).getValues();
+    const lineUserId = event.parameter.lineUserId || '';
+    const rows = values
+      .map((valuesRow, index) => {
+        const row = { row_number: index + 2 };
+        headers.forEach((header, columnIndex) => {
+          row[header] = normalizeValue(valuesRow[columnIndex]);
+        });
+        return row;
+      })
+      .filter((row) => !lineUserId || row.line_user_id === lineUserId);
+
+    return json({ ok: true, sheet: sheetName, rows });
+  } catch (error) {
+    return json({ ok: false, message: error.message }, 500);
+  }
+}
+
 function ensureHeaders(sheet, headers) {
   const current = sheet.getRange(1, 1, 1, headers.length).getValues()[0];
   const matches = headers.every((header, index) => current[index] === header);
@@ -68,6 +114,11 @@ function ensureHeaders(sheet, headers) {
     sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
     sheet.setFrozenRows(1);
   }
+}
+
+function normalizeValue(value) {
+  if (value instanceof Date) return value.toISOString();
+  return value;
 }
 
 function json(payload) {

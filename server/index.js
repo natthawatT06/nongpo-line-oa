@@ -25,6 +25,8 @@ import {
   appendFarmerFieldToGoogleSheets,
   appendFarmerRegistrationToGoogleSheets,
   appendPlantingPlanToGoogleSheets,
+  getLatestFarmerFieldFromGoogleSheets,
+  listFarmerFieldsFromGoogleSheets,
 } from './googleSheets.js'
 import { askSugarcaneExpert } from './typhoon.js'
 import { getWeatherSummary } from './weather.js'
@@ -226,6 +228,16 @@ app.get('/api/fields/list', async (req, res) => {
     }
   } catch (error) {
     console.error('Supabase field list failed:', error)
+  }
+
+  try {
+    const sheets = await listFarmerFieldsFromGoogleSheets(lineUserId)
+    if (sheets.fields?.length) {
+      res.json({ ok: true, fields: sheets.fields, source: 'google-sheets' })
+      return
+    }
+  } catch (error) {
+    console.error('Google Sheets field list failed:', error)
   }
 
   res.json({
@@ -936,6 +948,13 @@ async function getLatestFieldForUser(lineUserId) {
     if (fallbackField) return fallbackField
   } catch (error) {
     console.error('Supabase latest field lookup failed:', error)
+  }
+
+  try {
+    const sheetsField = await getLatestFarmerFieldFromGoogleSheets(lineUserId)
+    if (sheetsField) return sheetsField
+  } catch (error) {
+    console.error('Google Sheets latest field lookup failed:', error)
   }
 
   return getLatestField(lineUserId)
