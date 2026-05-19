@@ -432,8 +432,31 @@ async function saveFieldAndReply(event, payload) {
   }
 
   const field = createField({ lineUserId: userId, ...payload })
+  let cloudSave
+
+  try {
+    cloudSave = await addFarmerFieldToSupabase({
+      lineUserId: userId,
+      fieldName: payload.name,
+      crop: payload.crop,
+      areaRai: payload.areaRai,
+      latitude: payload.latitude,
+      longitude: payload.longitude,
+      province: null,
+      district: null,
+      note: [payload.soilType, payload.soilPh ? `pH ${payload.soilPh}` : null].filter(Boolean).join(' / ') || null,
+    })
+  } catch (error) {
+    console.error('Supabase LINE field save failed:', error)
+    cloudSave = { skipped: true, reason: 'Supabase insert failed; saved locally' }
+  }
+
+  const savedText = cloudSave?.skipped
+    ? `บันทึกแปลง "${field.name}" ในระบบ LINE แล้วครับ แต่ยังส่งเข้า Supabase ไม่สำเร็จ`
+    : `บันทึกแปลง "${field.name}" เข้า Supabase แล้วครับ ต่อไปกด เริ่มปลูก / ตรวจแปลง / ขายผลผลิต ได้เลย`
+
   return reply(event.replyToken, [
-    simpleText(`บันทึกแปลง "${field.name}" แล้วครับ ต่อไปกด เริ่มปลูก / ตรวจแปลง / ขายผลผลิต ได้เลย`),
+    simpleText(savedText),
     await fieldFlex(event),
   ])
 }
