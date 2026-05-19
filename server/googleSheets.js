@@ -4,6 +4,13 @@ function hasGoogleSheetsWebhook() {
   return Boolean(googleSheetsWebhookUrl && !['none', 'null', 'undefined'].includes(googleSheetsWebhookUrl.toLowerCase()))
 }
 
+export function getGoogleSheetsStatus() {
+  return {
+    configured: hasGoogleSheetsWebhook(),
+    urlHost: hasGoogleSheetsWebhook() ? new URL(googleSheetsWebhookUrl).host : null,
+  }
+}
+
 async function appendToGoogleSheet(sheet, row) {
   if (!hasGoogleSheetsWebhook()) {
     return { skipped: true, reason: 'Missing GOOGLE_SHEETS_WEBHOOK_URL' }

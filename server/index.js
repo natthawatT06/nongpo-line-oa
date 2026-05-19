@@ -27,6 +27,7 @@ import {
   appendPlantingPlanToGoogleSheets,
   getLatestAnyFarmerFieldFromGoogleSheets,
   getLatestFarmerFieldFromGoogleSheets,
+  getGoogleSheetsStatus,
   listAllFarmerFieldsFromGoogleSheets,
   listFarmerFieldsFromGoogleSheets,
 } from './googleSheets.js'
@@ -376,8 +377,51 @@ app.get('/health', (_req, res) => {
     service: 'nongpo-line-oa',
     lineConfigured: missingEnv.length === 0,
     richMenuConfigured: Boolean(farmerRichMenuId),
+    googleSheets: getGoogleSheetsStatus(),
     missingEnv,
   })
+})
+
+app.get('/api/debug/storage', async (req, res) => {
+  const lineUserId = String(req.query.lineUserId || '')
+  const debug = {
+    ok: true,
+    googleSheets: getGoogleSheetsStatus(),
+    lineUserIdProvided: Boolean(lineUserId),
+    checks: {},
+  }
+
+  try {
+    const sheets = lineUserId
+      ? await listFarmerFieldsFromGoogleSheets(lineUserId)
+      : { fields: [] }
+    debug.checks.googleSheetsForUser = {
+      ok: true,
+      count: sheets.fields?.length || 0,
+      first: sheets.fields?.[0] || null,
+    }
+  } catch (error) {
+    debug.checks.googleSheetsForUser = {
+      ok: false,
+      message: error.message,
+    }
+  }
+
+  try {
+    const allSheets = await listAllFarmerFieldsFromGoogleSheets()
+    debug.checks.googleSheetsAll = {
+      ok: true,
+      count: allSheets.fields?.length || 0,
+      first: allSheets.fields?.[0] || null,
+    }
+  } catch (error) {
+    debug.checks.googleSheetsAll = {
+      ok: false,
+      message: error.message,
+    }
+  }
+
+  res.json(debug)
 })
 
 const lineWebhookMiddleware = missingEnv.length ? express.json() : middleware(config)
