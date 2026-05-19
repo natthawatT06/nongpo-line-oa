@@ -46,6 +46,8 @@ const port = Number(process.env.PORT || 3000)
 const publicLiffUrl = process.env.PUBLIC_LIFF_URL || 'https://liff.line.me/PUT_LIFF_ID_HERE'
 const loginLiffUrl = process.env.PUBLIC_LIFF_URL_LOGIN || publicLiffUrl
 const startLiffUrl = process.env.PUBLIC_LIFF_URL_START || publicLiffUrl
+const startLiffJoiner = startLiffUrl.includes('?') ? '&' : '?'
+const startPlantingUrl = `${startLiffUrl}${startLiffJoiner}view=plant`
 const publicBaseUrl = (process.env.PUBLIC_WEB_URL || process.env.PUBLIC_ENDPOINT_URL || 'https://gently-labels-parent-xhtml.trycloudflare.com').replace(/\/$/, '')
 const farmerRichMenuId = process.env.RICH_MENU_ID_FARMER
 
@@ -120,6 +122,26 @@ app.post('/api/farmers/register-local', express.json(), (req, res) => {
   })
 
   res.json({ ok: true, user })
+})
+
+app.post('/api/farmers/login', express.json(), async (req, res) => {
+  const lineUserId = String(req.body?.lineUserId || '')
+
+  if (!lineUserId) {
+    res.status(400).json({
+      ok: false,
+      message: 'Missing lineUserId',
+    })
+    return
+  }
+
+  upsertUserRole(lineUserId, 'farmer')
+
+  if (client) {
+    await client.unlinkRichMenuIdFromUser(lineUserId).catch(() => null)
+  }
+
+  res.json({ ok: true })
 })
 
 app.post('/api/fields/add', express.json(), async (req, res) => {
@@ -308,6 +330,7 @@ app.get('/health', (_req, res) => {
     scope: 'farmer-only',
     service: 'nongpo-line-oa',
     lineConfigured: missingEnv.length === 0,
+    richMenuConfigured: Boolean(farmerRichMenuId),
     missingEnv,
   })
 })
@@ -379,10 +402,7 @@ async function setFarmerAndReply(event) {
 
   if (userId) {
     upsertUserRole(userId, 'farmer')
-    if (farmerRichMenuId) {
-      await client.unlinkRichMenuIdFromUser(userId).catch(() => null)
-      await client.linkRichMenuIdToUser(userId, farmerRichMenuId)
-    }
+    await client.unlinkRichMenuIdFromUser(userId).catch(() => null)
   }
 
   return reply(event.replyToken, [
@@ -572,7 +592,7 @@ async function plantFlex(event) {
       ['ฝน 7 วัน', weather ? `${weather.rainTotal.toFixed(1)} มม.` : 'ไม่พร้อม'],
     ],
     button: 'เปิดหน้าเริ่มปลูก',
-    uri: startLiffUrl,
+    uri: startPlantingUrl,
   })
 }
 

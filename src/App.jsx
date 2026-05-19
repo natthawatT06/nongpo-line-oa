@@ -91,6 +91,7 @@ function FieldRegistrationPage() {
     district: '',
   })
   const [status, setStatus] = useState('idle')
+  const [loginStatus, setLoginStatus] = useState('idle')
 
   function updateField(field, value) {
     setForm((current) => ({ ...current, [field]: value }))
@@ -127,6 +128,27 @@ function FieldRegistrationPage() {
     setStatus('saved')
   }
 
+  async function loginWithLine() {
+    setLoginStatus('saving')
+
+    try {
+      const lineUserId = await resolveLineUserId()
+      const response = await fetch('/api/farmers/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ lineUserId }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Unable to login farmer')
+      }
+
+      setLoginStatus('saved')
+    } catch {
+      setLoginStatus('error')
+    }
+  }
+
   return (
     <main className="liff-page farmer-auth-page">
       <section className="liff-hero farmer-auth-hero">
@@ -158,10 +180,12 @@ function FieldRegistrationPage() {
           </div>
           <h2>เข้าสู่ระบบน้องโป</h2>
           <p>ใช้บัญชี LINE เดิมเพื่อเปิดใช้งานเมนูเกษตรกร และกลับไปจัดการข้อมูลของคุณได้ทันที</p>
-          <button className="line-login-button" type="button" onClick={resolveLineUserId}>
+          <button className="line-login-button" type="button" onClick={loginWithLine} disabled={loginStatus === 'saving'}>
             <MessageCircle size={22} />
-            เข้าสู่ระบบด้วย LINE
+            {loginStatus === 'saving' ? 'กำลังเข้าสู่ระบบ...' : loginStatus === 'saved' ? 'เข้าสู่ระบบแล้ว' : 'เข้าสู่ระบบด้วย LINE'}
           </button>
+          {loginStatus === 'saved' && <p className="save-note">เข้าสู่ระบบสำเร็จ กลับไปที่ LINE แล้วพิมพ์ เมนู เพื่อโหลดเมนูล่าสุดครับ</p>}
+          {loginStatus === 'error' && <p className="save-note error">เข้าสู่ระบบไม่สำเร็จ กรุณาเปิดผ่าน LINE หรือเช็กการตั้งค่า LIFF อีกครั้งครับ</p>}
           <button className="text-switch-button" type="button" onClick={() => setMode('register')}>
             ยังไม่มีบัญชี? ลงทะเบียนเกษตร
           </button>

@@ -13,6 +13,8 @@ const farmerRichMenuSource = path.join(outDir, 'farmer-source.png')
 const loginLiffUrl = process.env.PUBLIC_LIFF_URL_LOGIN || process.env.PUBLIC_LIFF_URL
 const startLiffUrl = process.env.PUBLIC_LIFF_URL_START || process.env.PUBLIC_LIFF_URL
 const loginLiffJoiner = loginLiffUrl?.includes('?') ? '&' : '?'
+const startLiffJoiner = startLiffUrl?.includes('?') ? '&' : '?'
+const startPlantingUrl = `${startLiffUrl}${startLiffJoiner}view=plant`
 
 const token = process.env.LINE_CHANNEL_ACCESS_TOKEN
 if (!token) {
@@ -34,7 +36,7 @@ const farmerMenu = {
   items: [
     ['เพิ่มพื้นที่', 'uri', `${loginLiffUrl}${loginLiffJoiner}view=field`],
     ['คุยกับน้องโป', 'message'],
-    ['เริ่มปลูก', 'uri', startLiffUrl],
+    ['เริ่มปลูก', 'uri', startPlantingUrl],
     ['ตรวจสุขภาพแปลง', 'uri', `${loginLiffUrl}${loginLiffJoiner}view=health`],
     ['วิเคราะห์โรค', 'uri', `${loginLiffUrl}${loginLiffJoiner}view=disease`],
     ['หาที่ขาย', 'message'],
