@@ -1,8 +1,23 @@
 :root {
-  color: #18251d;
+  --field-ink: #17261c;
+  --field-muted: #66715f;
+  --field-deep: #15442b;
+  --field-green: #237342;
+  --field-leaf: #66a63f;
+  --field-gold: #e4b64a;
+  --field-rice: #fbf4d7;
+  --field-mist: #edf6ea;
+  --field-water: #3a8ba3;
+  --field-clay: #a35b35;
+  --field-paper: rgba(255, 255, 247, 0.94);
+  --field-line: rgba(65, 105, 68, 0.18);
+  --shadow-soft: 0 16px 38px rgba(31, 67, 39, 0.12);
+  --shadow-lift: 0 18px 34px rgba(23, 78, 43, 0.2);
+  color: var(--field-ink);
   font-family:
     'Noto Sans Thai',
     'IBM Plex Sans Thai',
+    'Sarabun',
     'Segoe UI',
     sans-serif;
   font-synthesis: none;
@@ -17,7 +32,10 @@
 }
 
 html {
-  background: #eaf4ea;
+  background:
+    linear-gradient(135deg, rgba(21, 68, 43, 0.08) 0 25%, transparent 25% 50%, rgba(228, 182, 74, 0.08) 50% 75%, transparent 75%),
+    #edf4e8;
+  background-size: 28px 28px;
 }
 
 body {
@@ -33,6 +51,14 @@ textarea {
 }
 
 button:focus-visible {
-  outline: 3px solid rgba(28, 118, 51, 0.34);
+  outline: 3px solid rgba(58, 139, 163, 0.42);
   outline-offset: 2px;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: rgba(228, 182, 74, 0.42);
 }
